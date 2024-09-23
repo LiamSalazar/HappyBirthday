@@ -26,7 +26,6 @@
             const canvas = document.getElementById('myCanvas');
             const ctx = canvas.getContext('2d');
     
-            // Función para dibujar un pétalo
             function dibujarPetalo(x, y, radius, angle, fill, border) {
                 ctx.beginPath();
                 ctx.moveTo(x, y);
@@ -52,11 +51,11 @@
     
                 function dibujarCapa(c) {
                     if (c < capas) {
-                        const ajusteAngulo = (Math.PI / capas) * c; // Rotar cada capa un poco más
+                        const ajusteAngulo = (Math.PI / capas) * c; 
                         function dibujarPetaloConDelay(i) {
                             if (i < petalos) {
                                 const angle = (i * 2 * Math.PI) / petalos + ajusteAngulo;
-                                dibujarPetalo(x, y, radius - (c * 10), angle, fill, border);  // Cada capa más pequeña
+                                dibujarPetalo(x, y, radius - (c * 10), angle, fill, border);  
                                 setTimeout(() => dibujarPetaloConDelay(i + 1), delay);
                             } else {
                                 setTimeout(() => dibujarCapa(c + 1), delay);
@@ -75,7 +74,7 @@
                 ctx.beginPath();
                 ctx.moveTo(x, y);
                 ctx.lineTo(x, y + largo);
-                ctx.strokeStyle = '#228B22';  // Color del tallo
+                ctx.strokeStyle = '#228B22';  
                 ctx.lineWidth = 6;
                 ctx.stroke();
                 setTimeout(callback, delay);
@@ -84,11 +83,11 @@
             function dibujarHoja(x, y, delay, callback) {
                 ctx.beginPath();
                 ctx.moveTo(x, y);
-                ctx.quadraticCurveTo(x + 40, y - 30, x + 60, y); // Forma de la hoja
+                ctx.quadraticCurveTo(x + 40, y - 30, x + 60, y);
                 ctx.quadraticCurveTo(x + 40, y + 30, x, y);
-                ctx.fillStyle = '#228B22';  // Verde para la hoja
+                ctx.fillStyle = '#228B22'; 
                 ctx.fill();
-                ctx.strokeStyle = '#006400';  // Verde oscuro para el borde
+                ctx.strokeStyle = '#006400';  
                 ctx.lineWidth = 2;
                 ctx.stroke();
                 setTimeout(callback, delay);
@@ -103,7 +102,7 @@
             const delay = 30;   // Tiempo de retraso entre cada paso
     
             function dibujar() {
-                // Función para manejar las promesas de dibujar flor y hoja al mismo tiempo
+                // Manejar las promesas de dibujar flor y hoja al mismo tiempo
                 function dibujarFlorCompleta(x, yTallo, yFlor, colorFlor, colorBordeFlor, colorHoja1X, colorHoja1Y, colorHoja2X, colorHoja2Y) {
                     return new Promise((resolve) => {
                         dibujarTallo(x, yTallo, 180, delay, () => {
@@ -137,7 +136,7 @@
                         centroFlorX - 195, centroFlorY + radius + 0
                     )
                 ]).then(() => {
-                    // Una vez que ambas flores se completan, se dibuja la flor central
+                    // Dibujar la flor central
                     dibujarTallo(centroFlorX + 5, centroFlorY + 106 + radius - 90, 180, delay, () => {
                         dibujarHoja(centroFlorX + 8, centroFlorY + 106 + radius + 10, delay, () => {
                             dibujarHoja(centroFlorX - 55, centroFlorY + 106 + radius + 0, delay, () => {
