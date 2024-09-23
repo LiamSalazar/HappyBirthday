@@ -12,7 +12,8 @@
         }
 
         canvas {
-            border: 2px solid #000;
+            width: 100%;
+            border: none;
             margin-top: 20px;
         }
     </style>
@@ -30,7 +31,7 @@
             ctx.beginPath();
             ctx.moveTo(x, y);
             const petaloAncho = radius / 2;
-            const petaloLargo = radius;
+            const petaloLargo = radius/ 1;
 
             // Curvas para formar los pétalos
             ctx.bezierCurveTo(
@@ -46,7 +47,6 @@
             ctx.stroke();
         }
 
-        // Función para dibujar la flor con capas
         function dibujarFlor(x, y, petalos, radius, capas) {
             for (let c = 0; c < capas; c++) {
                 const ajusteAngulo = (Math.PI / capas) * c; // Rotar cada capa un poco más
@@ -57,17 +57,15 @@
             }
         }
 
-        // Dibujar el tallo detrás de la flor
         function dibujarTallo(x, y, largo) {
             ctx.beginPath();
             ctx.moveTo(x, y);
             ctx.lineTo(x, y + largo);
-            ctx.strokeStyle = '#228B22';  // Verde para el tallo
+            ctx.strokeStyle = '#228B22';  // Color del tallo
             ctx.lineWidth = 6;
             ctx.stroke();
         }
 
-        // Dibujar una hoja en el tallo
         function dibujarHoja(x, y) {
             ctx.beginPath();
             ctx.moveTo(x, y);
@@ -80,20 +78,20 @@
         }
 
         // Parámetros de la flor
-        const centroFlorX = 250;
-        const centroFlorY = 250;
-        const petalos = 32;  // Número de pétalos por capa
+        const centroFlorX = canvas.width / 2;
+        const centroFlorY = canvas.height / 2 - 100;
+        const petalos = 16;  // Número de pétalos por capa
         const radius = 150;  // Tamaño del radio
-        const capas = 2;     // Número de capas de pétalos
+        const capas = 3;     // Número de capas de pétalos
+
+        // Dibujar el tallo que parece salir desde justo detrás de la flor
+        dibujarTallo(centroFlorX +5, centroFlorY + radius - 90, 200);
 
         // Dibujar la flor con capas (esto no cambia)
         dibujarFlor(centroFlorX, centroFlorY, petalos, radius, capas);
 
-        // Dibujar el tallo que parece salir desde justo detrás de la flor
-        dibujarTallo(centroFlorX +5, centroFlorY + radius - 80, 200);  // Ajustamos para que empiece más arriba
-
         // Dibujar la hoja en el tallo, ahora un poco más alta
-        dibujarHoja(centroFlorX + 8, centroFlorY + radius + 30);  // Ajustamos para que la hoja esté más arriba
+        dibujarHoja(centroFlorX + 8, centroFlorY + radius + 30);
     </script>
 </body>
 </html>
