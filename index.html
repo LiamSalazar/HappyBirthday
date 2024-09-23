@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flor con Tallo y Hoja</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+
+        canvas {
+            border: 2px solid #000;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Feliz cumpleaños guapa</h1>
+    <canvas id="myCanvas" width="500" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Función para dibujar un pétalo
+        function dibujarPetalo(x, y, radius, angle) {
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            const petaloAncho = radius / 2;
+            const petaloLargo = radius;
+
+            // Curvas para formar los pétalos
+            ctx.bezierCurveTo(
+                x + Math.cos(angle - 0.1) * petaloAncho, y + Math.sin(angle - 0.1) * petaloAncho, // Control izquierdo
+                x + Math.cos(angle) * petaloLargo, y + Math.sin(angle) * petaloLargo,             // Punto superior
+                x + Math.cos(angle + 0.1) * petaloAncho, y + Math.sin(angle + 0.1) * petaloAncho  // Control derecho
+            );
+            ctx.closePath();
+            ctx.strokeStyle = '#400204';
+            ctx.fillStyle = '#C30011';  
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        // Función para dibujar la flor con capas
+        function dibujarFlor(x, y, petalos, radius, capas) {
+            for (let c = 0; c < capas; c++) {
+                const ajusteAngulo = (Math.PI / capas) * c; // Rotar cada capa un poco más
+                for (let i = 0; i < petalos; i++) {
+                    const angle = (i * 2 * Math.PI) / petalos + ajusteAngulo;
+                    dibujarPetalo(x, y, radius - (c * 10), angle);  // Cada capa más pequeña
+                }
+            }
+        }
+
+        // Dibujar el tallo detrás de la flor
+        function dibujarTallo(x, y, largo) {
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x, y + largo);
+            ctx.strokeStyle = '#228B22';  // Verde para el tallo
+            ctx.lineWidth = 6;
+            ctx.stroke();
+        }
+
+        // Dibujar una hoja en el tallo
+        function dibujarHoja(x, y) {
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.quadraticCurveTo(x + 40, y - 30, x + 60, y); // Forma de la hoja
+            ctx.quadraticCurveTo(x + 40, y + 30, x, y);
+            ctx.fillStyle = '#228B22';  // Verde para la hoja
+            ctx.fill();
+            ctx.strokeStyle = '#006400';  // Verde oscuro para el borde
+            ctx.stroke();
+        }
+
+        // Parámetros de la flor
+        const centroFlorX = 250;
+        const centroFlorY = 250;
+        const petalos = 32;  // Número de pétalos por capa
+        const radius = 150;  // Tamaño del radio
+        const capas = 2;     // Número de capas de pétalos
+
+        // Dibujar la flor con capas (esto no cambia)
+        dibujarFlor(centroFlorX, centroFlorY, petalos, radius, capas);
+
+        // Dibujar el tallo que parece salir desde justo detrás de la flor
+        dibujarTallo(centroFlorX +5, centroFlorY + radius - 80, 200);  // Ajustamos para que empiece más arriba
+
+        // Dibujar la hoja en el tallo, ahora un poco más alta
+        dibujarHoja(centroFlorX + 8, centroFlorY + radius + 30);  // Ajustamos para que la hoja esté más arriba
+    </script>
+</body>
+</html>
