@@ -1,129 +1,154 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flor con Tallo y Hoja</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f0f0f0;
-        }
-
-        canvas {
-            width: 100%;
-            border: none;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Feliz cumpleaños guapa</h1>
-    <canvas id="myCanvas" width="500" height="600"></canvas>
-
-    <script>
-        const canvas = document.getElementById('myCanvas');
-        const ctx = canvas.getContext('2d');
-
-        // Función para dibujar un pétalo
-        function dibujarPetalo(x, y, radius, angle, fill, border) {
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            const petaloAncho = radius / 2;
-            const petaloLargo = radius/ 1;
-
-            // Curvas para formar los pétalos
-            ctx.bezierCurveTo(
-                x + Math.cos(angle - 0.1) * petaloAncho, y + Math.sin(angle - 0.1) * petaloAncho, // Control izquierdo
-                x + Math.cos(angle) * petaloLargo, y + Math.sin(angle) * petaloLargo,             // Punto superior
-                x + Math.cos(angle + 0.1) * petaloAncho, y + Math.sin(angle + 0.1) * petaloAncho  // Control derecho
-            );
-            ctx.closePath();
-            ctx.strokeStyle = border;
-            ctx.fillStyle = fill;  
-            ctx.fill();
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        }
-
-        function dibujarFlor(x, y, petalos, radius, capas, fill, border) {
-            for (let c = 0; c < capas; c++) {
-                const ajusteAngulo = (Math.PI / capas) * c; // Rotar cada capa un poco más
-                for (let i = 0; i < petalos; i++) {
-                    const angle = (i * 2 * Math.PI) / petalos + ajusteAngulo;
-                    dibujarPetalo(x, y, radius - (c * 10), angle, fill, border);  // Cada capa más pequeña
-                }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Jareth</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                background-color: #f0f0f0;
             }
-        }
+    
+            canvas {
+                width: 100%;
+                border: none;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Feliz cumpleaños guapa</h1>
+        <canvas id="myCanvas" width="500" height="600"></canvas>
+    
+        <script>
+            const canvas = document.getElementById('myCanvas');
+            const ctx = canvas.getContext('2d');
+    
+            // Función para dibujar un pétalo
+            function dibujarPetalo(x, y, radius, angle, fill, border) {
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                const petaloAncho = radius / 2;
+                const petaloLargo = radius / 1;
+    
+                // Curvas para formar los pétalos
+                ctx.bezierCurveTo(
+                    x + Math.cos(angle - 0.1) * petaloAncho, y + Math.sin(angle - 0.1) * petaloAncho, // Control izquierdo
+                    x + Math.cos(angle) * petaloLargo, y + Math.sin(angle) * petaloLargo,             // Punto superior
+                    x + Math.cos(angle + 0.1) * petaloAncho, y + Math.sin(angle + 0.1) * petaloAncho  // Control derecho
+                );
+                ctx.closePath();
+                ctx.strokeStyle = border;
+                ctx.fillStyle = fill;  
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+    
+            function dibujarFlor(x, y, petalos, radius, capas, fill, border, delay, callback) {
+                let petaloCount = 0;
+    
+                function dibujarCapa(c) {
+                    if (c < capas) {
+                        const ajusteAngulo = (Math.PI / capas) * c; // Rotar cada capa un poco más
+                        function dibujarPetaloConDelay(i) {
+                            if (i < petalos) {
+                                const angle = (i * 2 * Math.PI) / petalos + ajusteAngulo;
+                                dibujarPetalo(x, y, radius - (c * 10), angle, fill, border);  // Cada capa más pequeña
+                                setTimeout(() => dibujarPetaloConDelay(i + 1), delay);
+                            } else {
+                                setTimeout(() => dibujarCapa(c + 1), delay);
+                            }
+                        }
+                        dibujarPetaloConDelay(0);
+                    } else if (callback) {
+                        callback();
+                    }
+                }
+    
+                dibujarCapa(0);
+            }
+    
+            function dibujarTallo(x, y, largo, delay, callback) {
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x, y + largo);
+                ctx.strokeStyle = '#228B22';  // Color del tallo
+                ctx.lineWidth = 6;
+                ctx.stroke();
+                setTimeout(callback, delay);
+            }
+    
+            function dibujarHoja(x, y, delay, callback) {
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.quadraticCurveTo(x + 40, y - 30, x + 60, y); // Forma de la hoja
+                ctx.quadraticCurveTo(x + 40, y + 30, x, y);
+                ctx.fillStyle = '#228B22';  // Verde para la hoja
+                ctx.fill();
+                ctx.strokeStyle = '#006400';  // Verde oscuro para el borde
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                setTimeout(callback, delay);
+            }
+    
+            // Parámetros de la flor
+            const centroFlorX = canvas.width / 2;
+            const centroFlorY = canvas.height / 2 - 100;
+            const petalos = 16;  // Número de pétalos por capa
+            const radius = 110;  // Tamaño del radio
+            const capas = 3;     // Número de capas de pétalos
+            const delay = 30;   // Tiempo de retraso entre cada paso
+    
+            function dibujar() {
+                // Función para manejar las promesas de dibujar flor y hoja al mismo tiempo
+                function dibujarFlorCompleta(x, yTallo, yFlor, colorFlor, colorBordeFlor, colorHoja1X, colorHoja1Y, colorHoja2X, colorHoja2Y) {
+                    return new Promise((resolve) => {
+                        dibujarTallo(x, yTallo, 180, delay, () => {
+                            dibujarHoja(colorHoja1X, colorHoja1Y, delay, () => {
+                                dibujarHoja(colorHoja2X, colorHoja2Y, delay, () => {
+                                    dibujarFlor(x, yFlor, petalos, radius, capas, colorFlor, colorBordeFlor, delay, resolve);
+                                });
+                            });
+                        });
+                    });
+                }
 
-        function dibujarTallo(x, y, largo) {
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x, y + largo);
-            ctx.strokeStyle = '#228B22';  // Color del tallo
-            ctx.lineWidth = 6;
-            ctx.stroke();
-        }
-
-        function dibujarHoja(x, y) {
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.quadraticCurveTo(x + 40, y - 30, x + 60, y); // Forma de la hoja
-            ctx.quadraticCurveTo(x + 40, y + 30, x, y);
-            ctx.fillStyle = '#228B22';  // Verde para la hoja
-            ctx.fill();
-            ctx.strokeStyle = '#006400';  // Verde oscuro para el borde
-            ctx.stroke();
-        }
-
-        // Parámetros de la flor
-        const centroFlorX = canvas.width / 2;
-        const centroFlorY = canvas.height / 2 - 100;
-        const petalos = 16;  // Número de pétalos por capa
-        const radius = 110;  // Tamaño del radio
-        const capas = 3;     // Número de capas de pétalos
-
-        // FLOR DERECHA
-        // Dibujar el tallo que parece salir desde justo detrás de la flor
-        dibujarTallo(centroFlorX +140, centroFlorY + radius - 90, 180);
-
-        // Dibujar la flor con capas 
-        dibujarFlor(centroFlorX+130, centroFlorY, petalos, radius, capas, '#C060D4', '#5C0E5C');
-
-        // Dibujar la hoja en el tallo
-        dibujarHoja(centroFlorX + 140, centroFlorY + radius + 10);
-
-        // Dibujar la hoja en el tallo
-        dibujarHoja(centroFlorX + 80, centroFlorY + radius + 0);
-
-        // FLOR IZQUIERDA
-        // Dibujar el tallo que parece salir desde justo detrás de la flor
-        dibujarTallo(centroFlorX -135, centroFlorY + radius - 90, 180);
-
-        // Dibujar la flor con capas 
-        dibujarFlor(centroFlorX-130, centroFlorY, petalos, radius, capas, '#03CBFA', '#031F42');
-
-        // Dibujar la hoja en el tallo
-        dibujarHoja(centroFlorX - 138, centroFlorY + radius + 10);
-
-        // Dibujar la hoja en el tallo
-        dibujarHoja(centroFlorX - 195, centroFlorY + radius + 0);
-
-        // FLOR CENTRAL
-        // Dibujar el tallo que parece salir desde justo detrás de la flor
-        dibujarTallo(centroFlorX +5, centroFlorY + 106 + radius - 90, 180);
-
-        // Dibujar la flor con capas 
-        dibujarFlor(centroFlorX, centroFlorY + 106, petalos, radius, capas, '#CF5350', '#400204');
-
-        // Dibujar la hoja en el tallo
-        dibujarHoja(centroFlorX + 8, centroFlorY  + 106 + radius + 10);
-
-        // Dibujar la hoja en el tallo
-        dibujarHoja(centroFlorX - 55, centroFlorY  + 106 + radius + 0);
-
-
-    </script>
-</body>
+                // Ejecutar en paralelo la flor izquierda y derecha
+                Promise.all([
+                    // Flor derecha
+                    dibujarFlorCompleta(
+                        centroFlorX + 140, 
+                        centroFlorY + radius - 90, 
+                        centroFlorY, 
+                        '#C060D4', '#5C0E5C', 
+                        centroFlorX + 140, centroFlorY + radius + 10, 
+                        centroFlorX + 80, centroFlorY + radius + 0
+                    ),
+                    // Flor izquierda
+                    dibujarFlorCompleta(
+                        centroFlorX - 135, 
+                        centroFlorY + radius - 90, 
+                        centroFlorY, 
+                        '#03CBFA', '#031F42', 
+                        centroFlorX - 138, centroFlorY + radius + 10, 
+                        centroFlorX - 195, centroFlorY + radius + 0
+                    )
+                ]).then(() => {
+                    // Una vez que ambas flores se completan, se dibuja la flor central
+                    dibujarTallo(centroFlorX + 5, centroFlorY + 106 + radius - 90, 180, delay, () => {
+                        dibujarHoja(centroFlorX + 8, centroFlorY + 106 + radius + 10, delay, () => {
+                            dibujarHoja(centroFlorX - 55, centroFlorY + 106 + radius + 0, delay, () => {
+                                dibujarFlor(centroFlorX, centroFlorY + 106, petalos, radius, capas, '#CF5350', '#400204', delay, null);
+                            });
+                        });
+                    });
+                });
+            }
+            dibujar();
+        </script>
+    </body>
+    
 </html>
